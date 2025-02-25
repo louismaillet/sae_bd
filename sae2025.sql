@@ -19,8 +19,13 @@
 -- +---------------+--------------------------------------------+---------+-----------+-------+
 -- | etc...
 -- = Reponse question 127156.
+SELECT isbn, titre, nbpages, datepubli, prix 
+FROM COMMANDE 
+NATURAL JOIN DETAILCOMMANDE 
+NATURAL JOIN LIVRE
+WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 
-
+--11--
 
 -- +-----------------------+--
 -- * Question 127202 : 2pts --
@@ -35,8 +40,15 @@
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
+SELECT idcli,nomcli, prenomcli, adressecli, codepostal, villecli
+FROM CLIENT 
+NATURAL JOIN COMMANDE 
+NATURAL JOIN DETAILCOMMANDE
+NATURAL JOIN LIVRE
+NATURAL JOIN AUTEUR
+WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 
-
+--1127--
 
 -- +-----------------------+--
 -- * Question 127235 : 2pts --
@@ -52,7 +64,14 @@
 -- | etc...
 -- = Reponse question 127235.
 
+SELECT isbn, titre, nommag, qte
+FROM LIVRE
+NATURAL LEFT JOIN ECRIRE
+NATURAL JOIN POSSEDER
+NATURAL JOIN MAGASIN
+WHERE idauteur IS NULL AND qte > 8;
 
+--13--
 
 -- +-----------------------+--
 -- * Question 127279 : 2pts --
@@ -67,13 +86,17 @@
 -- +-------+-------------------------+-------+
 -- | etc...
 -- = Reponse question 127279.
+SELECT idmag, nommag, COUNT(idcli) AS nbcli
+FROM MAGASIN
+LEFT JOIN CLIENT ON MAGASIN.villecli = nommag 
+GROUP BY idmag, nommag; 
 
-
+--7--
 
 -- +-----------------------+--
 -- * Question 127291 : 2pts --
 -- +-----------------------+--
--- Ecrire une requête qui renvoie les informations suivantes:
+--  Ecrire une requête qui renvoie les informations suivantes:
 --  Pour chaque magasin, on veut la quantité de livres achetés le 15/09/2022 en affichant les 0.
 
 -- Voici le début de ce que vous devez obtenir.
@@ -83,7 +106,8 @@
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-
+SELECT nommag,count(isbn) nbex FROM LIVRE
+NATURAL LEFT JOIN   
 
 
 -- +-----------------------+--
