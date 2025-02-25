@@ -88,7 +88,7 @@ WHERE idauteur IS NULL AND qte > 8;
 -- = Reponse question 127279.
 SELECT idmag, nommag, COUNT(idcli) AS nbcli
 FROM MAGASIN
-LEFT JOIN CLIENT ON MAGASIN.villecli = nommag 
+LEFT JOIN CLIENT ON MAGASIN.villemag = CLIENT.villecli
 GROUP BY idmag, nommag; 
 
 --7--
@@ -108,6 +108,29 @@ GROUP BY idmag, nommag;
 -- = Reponse question 127291.
 SELECT nommag,count(isbn) nbex FROM LIVRE
 NATURAL LEFT JOIN   
+
+
+
+SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
+-- Sélectionne le nom du magasin et la somme des quantités de livres achetés, en remplaçant les valeurs NULL par 0
+FROM MAGASIN
+-- Table des magasins
+NATURAL LEFT JOIN (
+    SELECT idmag, numcom
+    -- Sélectionne l'identifiant du magasin et le numéro de commande
+    FROM COMMANDE
+    -- Table des commandes
+    WHERE datecom = str_to_date('15-09-2022','%d-%m-%Y')
+    -- Filtre les commandes pour la date du 15/09/2022
+) AS COMMANDE
+-- Sous-requête nommée COMMANDE
+NATURAL LEFT JOIN DETAILCOMMANDE
+-- Jointure avec la table DETAILCOMMANDE pour obtenir les détails des commandes
+GROUP BY nommag;
+-- Regroupe les résultats par nom de magasin
+
+
+
 
 
 -- +-----------------------+--
