@@ -112,22 +112,14 @@ NATURAL LEFT JOIN
 
 
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
--- Sélectionne le nom du magasin et la somme des quantités de livres achetés, en remplaçant les valeurs NULL par 0
 FROM MAGASIN
--- Table des magasins
 NATURAL LEFT JOIN (
     SELECT idmag, numcom
-    -- Sélectionne l'identifiant du magasin et le numéro de commande
     FROM COMMANDE
-    -- Table des commandes
     WHERE datecom = str_to_date('15-09-2022','%d-%m-%Y')
-    -- Filtre les commandes pour la date du 15/09/2022
 ) AS COMMANDE
--- Sous-requête nommée COMMANDE
 NATURAL LEFT JOIN DETAILCOMMANDE
--- Jointure avec la table DETAILCOMMANDE pour obtenir les détails des commandes
 GROUP BY nommag;
--- Regroupe les résultats par nom de magasin
 
 
 
