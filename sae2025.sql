@@ -40,11 +40,12 @@ WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
-SELECT idcli,nomcli, prenomcli, adressecli, codepostal, villecli
+SELECT DISTINCT idcli,nomcli, prenomcli, adressecli, codepostal, villecli
 FROM CLIENT 
 NATURAL JOIN COMMANDE 
 NATURAL JOIN DETAILCOMMANDE
 NATURAL JOIN LIVRE
+NATURAL JOIN ECRIRE
 NATURAL JOIN AUTEUR
 WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 
@@ -106,11 +107,6 @@ GROUP BY idmag, nommag;
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-SELECT nommag,count(isbn) nbex FROM LIVRE
-NATURAL LEFT JOIN   
-
-
-
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
 FROM MAGASIN
 NATURAL LEFT JOIN (
