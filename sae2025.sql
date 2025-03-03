@@ -40,11 +40,7 @@ WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
-<<<<<<< HEAD
 SELECT distinct(idcli),nomcli, prenomcli, adressecli, codepostal, villecli
-=======
-SELECT DISTINCT idcli,nomcli, prenomcli, adressecli, codepostal, villecli
->>>>>>> 8d5193eb1bc53252f45fb463ea1f9a8729f32f7c
 FROM CLIENT 
 NATURAL JOIN COMMANDE 
 NATURAL JOIN DETAILCOMMANDE
@@ -111,11 +107,8 @@ GROUP BY idmag, nommag;
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 8d5193eb1bc53252f45fb463ea1f9a8729f32f7c
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
 FROM MAGASIN
 NATURAL LEFT JOIN (
@@ -150,24 +143,6 @@ Son prix est de 33.5€
 -- +------------+
 -- | etc...
 -- = Reponse question 127314.
-
--- Vérifier l'insertion dans la table LIVRE
-SELECT * FROM LIVRE WHERE isbn = 9782844273765;
-
--- Vérifier l'insertion dans la table EDITEUR
-SELECT * FROM EDITEUR WHERE nomedit = 'First Interactive';
-
--- Vérifier l'insertion dans la table EDITER
-SELECT * FROM EDITER WHERE isbn = 9782844273765;
-
--- Vérifier l'insertion dans la table AUTEUR
-SELECT * FROM AUTEUR WHERE idauteur IN ('OL246259A', 'OL7670824A');
-
--- Vérifier l'insertion dans la table ECRIRE
-SELECT * FROM ECRIRE WHERE isbn = 9782844273765;
-
--- Vérifier l'insertion dans la table POSSEDER
-SELECT * FROM POSSEDER WHERE isbn = 9782844273765 AND idmag = 'Loire et Livres';
 
 INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
 VALUES (9782844273765, 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
