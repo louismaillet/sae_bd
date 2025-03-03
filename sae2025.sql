@@ -40,7 +40,7 @@ WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
-SELECT idcli,nomcli, prenomcli, adressecli, codepostal, villecli
+SELECT distinct(idcli),nomcli, prenomcli, adressecli, codepostal, villecli
 FROM CLIENT 
 NATURAL JOIN COMMANDE 
 NATURAL JOIN DETAILCOMMANDE
@@ -48,7 +48,7 @@ NATURAL JOIN LIVRE
 NATURAL JOIN AUTEUR
 WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 
---1127--
+--375--
 
 -- +-----------------------+--
 -- * Question 127235 : 2pts --
@@ -106,9 +106,6 @@ GROUP BY idmag, nommag;
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-SELECT nommag,count(isbn) nbex FROM LIVRE
-NATURAL LEFT JOIN   
-
 
 
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
@@ -130,7 +127,14 @@ GROUP BY nommag;
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Instructions d'insertion dans la base de données
+/* 
+Indiquez les insertions à effectuer dans la base de données pour insérer le livre de numéro ISBN
+9782844273765 dont le titre est SQL pour les Nuls publié en 2002 par First Interactive. 
+compte 292 pages et a été écrit par Allen G. Taylor (d’identifiant OL246259A) et Reinhard Engel
+(d’identifiant OL7670824A). Ce livre est stocké en 3 exemplaires dans le magasin Loire et Livres.
+Son prix est de 33.5€
 
+*/
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
 -- +------------+
@@ -139,6 +143,33 @@ GROUP BY nommag;
 -- | etc...
 -- = Reponse question 127314.
 
+-- Vérifier l'insertion dans la table LIVRE
+SELECT * FROM LIVRE WHERE isbn = 9782844273765;
+
+-- Vérifier l'insertion dans la table EDITEUR
+SELECT * FROM EDITEUR WHERE nomedit = 'First Interactive';
+
+-- Vérifier l'insertion dans la table EDITER
+SELECT * FROM EDITER WHERE isbn = 9782844273765;
+
+-- Vérifier l'insertion dans la table AUTEUR
+SELECT * FROM AUTEUR WHERE idauteur IN ('OL246259A', 'OL7670824A');
+
+-- Vérifier l'insertion dans la table ECRIRE
+SELECT * FROM ECRIRE WHERE isbn = 9782844273765;
+
+-- Vérifier l'insertion dans la table POSSEDER
+SELECT * FROM POSSEDER WHERE isbn = 9782844273765 AND idmag = 'Loire et Livres';
+
+INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
+VALUES (9782844273765, 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
+INSERT EDITEUR VALUES ('First Interactive',240);
+INSERT EDITER VALUES (9782844273765, 240);
+INSERT AUTEUR VALUES (OL246259A, 'Allen G. Taylor');
+INSERT AUTEUR VALUES (OL7670824A, 'Reinhard Engel');
+INSERT ECRIRE VALUES (9782844273765, OL246259A);
+INSERT ECRIRE VALUES (9782844273765, OL7670824A);
+INSERT POSSEDER VALUES ('Loire et Livres', 9782844273765, 3);
 
 
 -- +-----------------------+--
