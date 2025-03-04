@@ -261,7 +261,14 @@ GROUP BY YEAR(datecom), typevente;
 -- +-------------------+-----------+
 -- | etc...
 -- = Reponse question 127471.
-
+select nomedit as Editeur, count(distinct idauteur) as nbauteurs
+from EDITEUR
+natural join EDITER
+natural join LIVRE
+natural join ECRIRE
+group by nomedit
+ORDER BY nbauteurs DESC
+LIMIT 10;
 
 
 -- +-----------------------+--
