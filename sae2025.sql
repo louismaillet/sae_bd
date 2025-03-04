@@ -238,7 +238,12 @@ group by MONTH(datecom), nommag;
 -- | etc...
 -- = Reponse question 127437.
 
-SELECT YEAR(datecom) as annee, enligne as typevente, sum(prixvente*qte) as montant
+SELECT YEAR(datecom) as annee, 
+    CASE 
+        WHEN enligne = 'O' THEN 'en ligne' 
+        ELSE 'en magasin' 
+    END as typevente, -- on remplace les O par en ligne et les N par en magasin fonction trouvé sur google 
+    sum(prixvente*qte) as montant
 FROM COMMANDE
 NATURAL JOIN DETAILCOMMANDE
 GROUP BY YEAR(datecom), typevente;
