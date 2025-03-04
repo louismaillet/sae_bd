@@ -19,6 +19,7 @@
 -- +---------------+--------------------------------------------+---------+-----------+-------+
 -- | etc...
 -- = Reponse question 127156.
+\! echo "requete 1----------------------------------------------"
 SELECT isbn, titre, nbpages, datepubli, prix 
 FROM COMMANDE 
 NATURAL JOIN DETAILCOMMANDE 
@@ -40,6 +41,7 @@ WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
+\! echo "requete 2----------------------------------------------"
 SELECT distinct(idcli),nomcli, prenomcli, adressecli, codepostal, villecli
 FROM CLIENT 
 NATURAL JOIN COMMANDE 
@@ -64,7 +66,7 @@ WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 -- +---------------+-----------------------------------+-------------------------+-----+
 -- | etc...
 -- = Reponse question 127235.
-
+\! echo "requete 3----------------------------------------------"
 SELECT isbn, titre, nommag, qte
 FROM LIVRE
 NATURAL LEFT JOIN ECRIRE
@@ -87,6 +89,7 @@ WHERE idauteur IS NULL AND qte > 8;
 -- +-------+-------------------------+-------+
 -- | etc...
 -- = Reponse question 127279.
+\! echo "requete 4----------------------------------------------"
 SELECT idmag, nommag, COUNT(idcli) AS nbcli
 FROM MAGASIN
 LEFT JOIN CLIENT ON MAGASIN.villemag = CLIENT.villecli
@@ -107,8 +110,7 @@ GROUP BY idmag, nommag;
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-
-
+\! echo "requete 5----------------------------------------------"
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
 FROM MAGASIN
 NATURAL LEFT JOIN (
@@ -168,6 +170,7 @@ Son prix est de 33.5€
 -- +-------------------------+-------+-----+
 -- | etc...
 -- = Reponse question 127369.
+\! echo "requete 6----------------------------------------------"
 SELECT nommag,YEAR(datecom) Année,sum(qte) qte FROM MAGASIN
 NATURAL JOIN COMMANDE
 NATURAL JOIN DETAILCOMMANDE
@@ -187,6 +190,7 @@ GROUP BY nommag,YEAR(datecom);
 -- | Theme                                | Montant |
 -- +--------------------------------------+---------+
 -- | etc...
+\! echo "requete 7----------------------------------------------"
 SELECT nomclass AS Theme, SUM(prixvente * qte) AS Montant
 FROM DETAILCOMMANDE
 NATURAL JOIN COMMANDE
@@ -211,6 +215,7 @@ ORDER BY nomclass;
 -- +------+-------------------------+---------+
 -- | etc...
 -- = Reponse question 127381.
+\! echo "requete 8----------------------------------------------"
 select MONTH(datecom) as mois, nommag as Magasin, sum(prixvente*qte) as CA
 from COMMANDE
 natural join DETAILCOMMANDE
