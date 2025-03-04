@@ -238,7 +238,10 @@ group by MONTH(datecom), nommag;
 -- | etc...
 -- = Reponse question 127437.
 
-
+SELECT YEAR(datecom) as annee, enligne as typevente, sum(prixvente*qte) as montant
+FROM COMMANDE
+NATURAL JOIN DETAILCOMMANDE
+GROUP BY YEAR(datecom), typevente;
 
 -- +-----------------------+--
 -- * Question 127471 : 2pts --
