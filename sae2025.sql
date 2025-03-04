@@ -285,7 +285,15 @@ LIMIT 10;
 -- | etc...
 -- = Reponse question 127516.
 
-
+SELECT villecli AS ville, COUNT(idcli) AS qte
+FROM CLIENT
+NATURAL JOIN COMMANDE
+NATURAL JOIN DETAILCOMMANDE
+NATURAL JOIN LIVRE
+NATURAL JOIN ECRIRE
+NATURAL JOIN AUTEUR
+WHERE nomauteur = 'René Goscinny'
+GROUP BY villecli;
 
 -- +-----------------------+--
 -- * Question 127527 : 2pts --
