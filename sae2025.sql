@@ -144,15 +144,15 @@ Son prix est de 33.5€
 -- | etc...
 -- = Reponse question 127314.
 
-INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
-VALUES (9782844273765, 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
-INSERT EDITEUR VALUES ('First Interactive',240);
-INSERT EDITER VALUES (9782844273765, 240);
-INSERT AUTEUR VALUES (OL246259A, 'Allen G. Taylor');
-INSERT AUTEUR VALUES (OL7670824A, 'Reinhard Engel');
-INSERT ECRIRE VALUES (9782844273765, OL246259A);
-INSERT ECRIRE VALUES (9782844273765, OL7670824A);
-INSERT POSSEDER VALUES ('Loire et Livres', 9782844273765, 3);
+--INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
+--VALUES ('9782844273765', 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
+--INSERT EDITEUR VALUES ('First Interactive',240);
+--INSERT EDITER VALUES ('9782844273765', 240);
+--INSERT AUTEUR VALUES ('OL246259A', 'Allen G. Taylor');
+--INSERT AUTEUR VALUES ('OL7670824A', 'Reinhard Engel');
+--INSERT ECRIRE VALUES ('9782844273765', 'OL246259A');
+--INSERT ECRIRE VALUES ('9782844273765', 'OL7670824A');
+--INSERT POSSEDER VALUES ('Loire et Livres', '9782844273765', 3);
 
 
 -- +-----------------------+--
@@ -168,6 +168,10 @@ INSERT POSSEDER VALUES ('Loire et Livres', 9782844273765, 3);
 -- +-------------------------+-------+-----+
 -- | etc...
 -- = Reponse question 127369.
+SELECT nommag,YEAR(datecom) Année,sum(qte) qte FROM MAGASIN
+NATURAL JOIN COMMANDE
+NATURAL JOIN DETAILCOMMANDE
+GROUP BY nommag,YEAR(datecom); 
 
 
 
@@ -183,8 +187,14 @@ INSERT POSSEDER VALUES ('Loire et Livres', 9782844273765, 3);
 -- | Theme                                | Montant |
 -- +--------------------------------------+---------+
 -- | etc...
--- = Reponse question 127370.
-
+SELECT nomclass AS Theme, SUM(prixvente * qte) AS Montant
+FROM DETAILCOMMANDE
+NATURAL JOIN COMMANDE
+NATURAL JOIN LIVRE
+NATURAL JOIN THEMES
+NATURAL JOIN CLASSIFICATION
+WHERE YEAR(datecom) = 2024
+GROUP BY LEFT(LPAD(iddewey, 3, '0'), 1);
 
 
 -- +-----------------------+--
@@ -256,7 +266,7 @@ INSERT POSSEDER VALUES ('Loire et Livres', 9782844273765, 3);
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête Graphique 7 Valeur du stock par magasin
- Requête Graphique 8 Statistiques sur l'évolution du chiffre d'affaire total par client 
+--Requête Graphique 8 Statistiques sur l'évolution du chiffre d'affaire total par client 
 
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
