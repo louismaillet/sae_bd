@@ -310,6 +310,11 @@ GROUP BY villecli;
 -- | etc...
 -- = Reponse question 127527.
 
+select nommag as Magasin, sum(qte*prix) as total
+from MAGASIN
+natural join POSSEDER
+natural join LIVRE
+group by nommag;
 
 
 -- +-----------------------+--
