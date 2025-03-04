@@ -194,7 +194,8 @@ NATURAL JOIN LIVRE
 NATURAL JOIN THEMES
 NATURAL JOIN CLASSIFICATION
 WHERE YEAR(datecom) = 2024
-GROUP BY LEFT(LPAD(iddewey, 3, '0'), 1);
+GROUP BY LEFT(LPAD(iddewey, 3, '0'), 1)
+ORDER BY nomclass;
 
 
 -- +-----------------------+--
@@ -210,7 +211,12 @@ GROUP BY LEFT(LPAD(iddewey, 3, '0'), 1);
 -- +------+-------------------------+---------+
 -- | etc...
 -- = Reponse question 127381.
-
+select MONTH(datecom) as mois, nommag as Magasin, sum(prixvente*qte) as CA
+from COMMANDE
+natural join DETAILCOMMANDE
+natural join MAGASIN
+where YEAR(datecom) = 2024
+group by MONTH(datecom), nommag;
 
 
 -- +-----------------------+--
