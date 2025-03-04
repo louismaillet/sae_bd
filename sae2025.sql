@@ -321,6 +321,29 @@ group by nommag;
 -- * Question 127538 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
+-- Requête Graphique 8 Statistiques sur l'évolution du chiffre d'affaire total par client 
+-- Voici le début de ce que vous devez obtenir.
+-- ATTENTION à l'ordre des colonnes et leur nom!
+-- +-------+---------+---------+---------+
+-- | annee | maximum | minimum | moyenne |
+-- +-------+---------+---------+---------+
+-- | etc...
+-- = Reponse question 127538.
+
+
+
+SELECT YEAR(datecom) as annee, 
+    MAX(prixvente*qte) as maximum,
+    MIN(prixvente*qte) as minimum,
+    AVG(prixvente*qte) as moyenne
+FROM COMMANDE
+NATURAL JOIN DETAILCOMMANDE
+GROUP BY YEAR(datecom);
+
+-- +-----------------------+--
+-- * Question 127538 : 2pts --
+-- +-----------------------+--
+-- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête Palmarès
 
 -- Voici le début de ce que vous devez obtenir.
@@ -330,6 +353,8 @@ group by nommag;
 -- +-------+---------+---------+---------+
 -- | etc...
 -- = Reponse question 127538.
+
+
 
 
 
