@@ -330,6 +330,11 @@ group by nommag;
 -- +-------+---------+---------+---------+
 -- | etc...
 -- = Reponse question 127538.
+with MoyenneClient(idcli,annee,CA) as (select idcli,YEAR(datecom) annee,SUM(qte*prixvente) CA from CLIENT
+                       natural join COMMANDE natural join DETAILCOMMANDE
+                       group by idcli,YEAR(datecom))
+select annee,MAX(CA) maximum,MIN(CA) minimum,AVG(CA) moyenne from MoyenneClient
+group by annee;
 
 
 
