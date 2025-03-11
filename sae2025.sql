@@ -111,13 +111,14 @@ GROUP BY idmag, nommag;
 -- | etc...
 -- = Reponse question 127291.
 \! echo "requete 5----------------------------------------------"
+with Commandes_15092022 AS(
+SELECT idmag, numcom
+FROM COMMANDE
+WHERE datecom = str_to_date('15-09-2022','%d-%m-%Y'))
+
 SELECT nommag, IFNULL(SUM(qte), 0) AS nbex
 FROM MAGASIN
-NATURAL LEFT JOIN (
-    SELECT idmag, numcom
-    FROM COMMANDE
-    WHERE datecom = str_to_date('15-09-2022','%d-%m-%Y')
-) AS COMMANDE
+NATURAL LEFT JOIN Commandes_15092022
 NATURAL LEFT JOIN DETAILCOMMANDE
 GROUP BY nommag;
 
