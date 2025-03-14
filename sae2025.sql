@@ -354,9 +354,24 @@ GROUP BY YEAR(datecom);
 -- +-------+---------+---------+---------+
 -- | etc...
 -- = Reponse question 127538.
-
-
-
+WITH AuteurVentesAnnuel AS (
+    SELECT YEAR(datecom) AS annee, nomauteur, SUM(qte) AS total
+    FROM COMMANDE
+    NATURAL JOIN DETAILCOMMANDE
+    NATURAL JOIN LIVRE
+    NATURAL JOIN ECRIRE
+    NATURAL JOIN AUTEUR
+    WHERE YEAR(datecom) < 2025
+    GROUP BY YEAR(datecom), nomauteur
+)
+SELECT annee, nomauteur, total
+FROM AuteurVentesAnnuel
+WHERE (annee, total) IN (
+    SELECT annee, MAX(total)
+    FROM AuteurVentesAnnuel
+    GROUP BY annee
+)
+ORDER BY annee;
 
 
 -- +-----------------------+--
