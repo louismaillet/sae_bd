@@ -301,7 +301,6 @@ GROUP BY villecli;
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête Graphique 7 Valeur du stock par magasin
---Requête Graphique 8 Statistiques sur l'évolution du chiffre d'affaire total par client 
 
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
@@ -317,6 +316,25 @@ natural join POSSEDER
 natural join LIVRE
 group by nommag;
 
+-- +-----------------------+--
+-- * Question 127527 : 2pts --
+-- +-----------------------+--
+-- Ecrire une requête qui renvoie les informations suivantes:
+--Requête Graphique 8 Statistiques sur l'évolution du chiffre d'affaire total par client 
+
+-- Voici le début de ce que vous devez obtenir.
+-- ATTENTION à l'ordre des colonnes et leur nom!
+-- +-------------------------+---------+
+-- | Magasin                 | total   |
+-- +-------------------------+---------+
+-- | etc...
+-- = Reponse question 127527.
+
+with MoyenneClient(idcli,annee,CA) as (select idcli,YEAR(datecom) annee,SUM(qte*prixvente) CA from CLIENT
+                       natural join COMMANDE natural join DETAILCOMMANDE
+                       group by idcli,YEAR(datecom))
+select annee,MAX(CA) maximum,MIN(CA) minimum,AVG(CA) moyenne from MoyenneClient
+group by annee;
 
 -- +-----------------------+--
 -- * Question 127538 : 2pts --
@@ -372,6 +390,7 @@ WHERE (annee, total) IN (
     GROUP BY annee
 )
 ORDER BY annee;
+
 
 
 -- +-----------------------+--
