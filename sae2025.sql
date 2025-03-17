@@ -409,3 +409,13 @@ ORDER BY annee;
 
 
 
+SELECT nommag , numcom , datecom ,nomcli, prenomcli, adressecli, 
+       codepostal, villecli, isbn, titre, qte, prixvente, 
+       (prixvente * qte) AS Total
+FROM COMMANDE
+NATURAL JOIN DETAILCOMMANDE
+NATURAL JOIN CLIENT
+NATURAL JOIN LIVRE
+NATURAL JOIN MAGASIN
+WHERE MONTH(datecom) = 2 AND YEAR(datecom) = 2020
+ORDER BY nommag, numcom, isbn;
