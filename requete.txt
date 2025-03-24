@@ -1,0 +1,10 @@
+Graphique 1
+SELECT `nommag`, YEAR( `datecom` ) `Annee`, SUM( `qte` ) `qte` FROM `MAGASIN` NATURAL JOIN `COMMANDE` NATURAL JOIN `DETAILCOMMANDE` GROUP BY `nommag`, `Annee`
+Graphique 3
+SELECT MONTH( `datecom` ) `mois`, `nommag` `Magasin`, SUM( `prixvente` * `qte` ) `CA` FROM `COMMANDE` NATURAL JOIN `DETAILCOMMANDE` NATURAL JOIN `MAGASIN` WHERE YEAR( `datecom` ) = 2024 GROUP BY MONTH( `datecom` ), `nommag`
+graphique 5
+SELECT `nomedit` `Editeur`, COUNT( DISTINCT `idauteur` ) `nbauteurs` FROM `EDITEUR` NATURAL JOIN `EDITER` NATURAL JOIN `LIVRE` NATURAL JOIN `ECRIRE` GROUP BY `nomedit` ORDER BY `nbauteurs` DESC LIMIT 10
+Graphique 8 vue moyenne
+SELECT `idcli`, YEAR( `datecom` ) `annee`, SUM( `qte` * `prixvente` ) `CA` FROM `CLIENT` NATURAL JOIN `COMMANDE` NATURAL JOIN `DETAILCOMMANDE` GROUP BY `idcli`, YEAR( `datecom` )
+Graphique 8
+SELECT `annee`, MAX( `CA` ) `maximum`, MIN( `CA` ) `minimum`, AVG( `CA` ) `moyenne` FROM `MoyenneClient` GROUP BY `annee`
