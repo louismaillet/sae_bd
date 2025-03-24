@@ -8,3 +8,5 @@ Graphique 8 vue moyenne
 SELECT `idcli`, YEAR( `datecom` ) `annee`, SUM( `qte` * `prixvente` ) `CA` FROM `CLIENT` NATURAL JOIN `COMMANDE` NATURAL JOIN `DETAILCOMMANDE` GROUP BY `idcli`, YEAR( `datecom` )
 Graphique 8
 SELECT `annee`, MAX( `CA` ) `maximum`, MIN( `CA` ) `minimum`, AVG( `CA` ) `moyenne` FROM `MoyenneClient` GROUP BY `annee`
+requete graĥique 2
+SELECT `nomclass` `Theme`, SUM( `prixvente` * `qte` ) `Montant` FROM `DETAILCOMMANDE` NATURAL JOIN `COMMANDE` NATURAL JOIN `LIVRE` NATURAL JOIN `THEMES` NATURAL JOIN `CLASSIFICATION` WHERE YEAR( `datecom` ) = 2024 GROUP BY LEFT( LPAD( `iddewey`, 3, '0' ), 1 ) ORDER BY `nomclass`
