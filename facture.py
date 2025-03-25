@@ -63,45 +63,53 @@ def faire_factures(requete:str, mois:int, annee:int, bd:MySQL):
             res += "-"*taille+"\n"   
             facture_editees = 0
             nb_livre = 0
-        if i==len(requetes):
-            res += str(facture_editees)+" factures éditées\n"
-            res += str(nb_livre)+" livres vendus\n"
-            res += "*"*taille+"\n"
-            res +="Chiffre d'affaire global : "+str(ca_global)
-            res +="Nombre livres vendus "+str(nb_global)
-
-
-
-
-
-
-
-        if numcom != requetes[i+1]['numcom']:
-            res += f"{requetes[i+1]['prenomcli']} {requetes[i+1]['nomcli']}\n{requetes[i+1]['adressecli']}\n{requetes[i+1]['codepostal']} {requetes[i+1]['villecli']}\n"
-            res += f"commande n° {requetes[i+1]['numcom']} du {requetes[i+1]['datecom']}".center(taille)+"\n"
+            nb_commande_livre = 1
+            res += f"{prenomcli} {nomcli}\n{adressecli}\n{codepostal} {villecli}\n"
+            res += f"commande n° {numcom} du {datecom}".center(taille)+"\n"
             res += "ISBN".rjust(12)+"Titre".rjust(20)+"qte".rjust(56)+"prix".rjust(16)+"total\n".rjust(11)
+        elif numcom != requetes[i+1]['numcom']:
             res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
+            nb_commande_livre = 1
             total += Total
-            facture_editees+=1
             res += "--------\n".rjust(taille)
             res += ("Total    "+str(total)+"\n").rjust(taille)
             res +="-"*taille+"\n"
+            ca_global+= total
             total = 0
             nb_livre += qte
-            nb_commande_livre +=qte
-            facture_editees+= 1
+            facture_editees+=1
             if nommag != requetes[i+1]['nommag']:
                 res += str(facture_editees)+" factures éditées\n"
                 res += str(nb_livre)+" livres vendus\n"
                 res += "*"*taille+"\n"
                 res += "Edition des factures du magasin "+str(nommag)+"\n"
-                res += "-"*taille+"\n"   
+                res += "-"*taille+"\n"
+                nb_global +=nb_livre   
                 facture_editees = 0
                 nb_livre = 0
+            res += f"{requetes[i+1]['prenomcli']} {requetes[i+1]['nomcli']}\n{requetes[i+1]['adressecli']}\n{requetes[i+1]['codepostal']} {requetes[i+1]['villecli']}\n"
+            res += f"commande n° {requetes[i+1]['numcom']} du {requetes[i+1]['datecom']}".center(taille)+"\n"
+            res += "ISBN".rjust(12)+"Titre".rjust(20)+"qte".rjust(56)+"prix".rjust(16)+"total\n".rjust(11)
         else:
             res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
             total += Total
+            nb_commande_livre +=1
+            nb_livre += qte
+        if i==(len(requetes)-2):
+            res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
+            total += Total
+            ca_global+= total
+            nb_livre += qte
+            nb_global +=nb_livre
             facture_editees+=1
+            res += "--------\n".rjust(taille)
+            res += ("Total    "+str(total)+"\n").rjust(taille)
+            res +="-"*taille+"\n"
+            res += str(facture_editees)+" factures éditées\n"
+            res += str(nb_livre)+" livres vendus\n"
+            res += "*"*taille+"\n"
+            res += f"Chiffre d'affaire global : {ca_global}\n"
+            res += f"Nombre livres vendus : {nb_global}"
 
         
     #ici fin du traitement
