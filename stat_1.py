@@ -30,36 +30,14 @@ class MySQL(object):
                 requete=requete.replace('?',str(param),1)
         return self.cnx.execute(requete)
 
-def faire_factures(requete:str, mois:int, annee:int, bd:MySQL):
-    # exécute la requête en remplaçant le premier ? par le numéro du mois 
-    # et le deuxième ? par l'année
-    curseur=bd.execute(requete,(mois,annee))
-    # Initialisations du traitement
-    res=''
-    for ligne in curseur:
-        # parcours du résultat de la requête. 
-        # ligne peut être vu comme un dictionnaire dont les clés sont les noms des colonnes de votre requête
-        # est les valeurs sont les valeurs de ces colonnes pour la ligne courante
-        # par exemple ligne['numcom'] va donner le numéro de la commande de la ligne courante 
-        
-
-    #ici fin du traitement
-    # fermeture de la requête
-        curseur.close()
-    return res
-
 def visualiser_points(requete:str, bd:MySQL):
-    """
-    Exécute une requête SQL pour récupérer les données nécessaires et trace un nuage de points.
-    """
     curseur = bd.execute(requete, [])
     nb_ventes = []
     ca = []
     
     for ligne in curseur:
-        # Correction : Utiliser les noms exacts des colonnes retournées par la requête SQL
-        nb_ventes.append(ligne[0])  # Première colonne : NbVentes
-        ca.append(ligne[1])        # Deuxième colonne : CA
+        nb_ventes.append(ligne[0])  # NbVentes
+        ca.append(ligne[1])        # CA
     
     curseur.close()
     
