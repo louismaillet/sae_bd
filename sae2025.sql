@@ -1,5 +1,5 @@
--- Devoir 1
--- Nom: Joubert Nathan, Maillet Louis
+-- Devoir 127
+-- Nom: , Prenom: 
 
 -- Feuille SAE2.05 Exploitation d'une base de données: Livre Express
 -- 
@@ -19,14 +19,12 @@
 -- +---------------+--------------------------------------------+---------+-----------+-------+
 -- | etc...
 -- = Reponse question 127156.
-\! echo "requete 1----------------------------------------------"
 SELECT isbn, titre, nbpages, datepubli, prix 
 FROM COMMANDE 
 NATURAL JOIN DETAILCOMMANDE 
 NATURAL JOIN LIVRE
 WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 
---11--
 
 -- +-----------------------+--
 -- * Question 127202 : 2pts --
@@ -41,7 +39,6 @@ WHERE datecom = str_to_date('01-12-2024','%d-%m-%Y');
 -- +-------+---------+-----------+-----------------------------+------------+-------------+
 -- | etc...
 -- = Reponse question 127202.
-\! echo "requete 2----------------------------------------------"
 SELECT distinct(idcli),nomcli, prenomcli, adressecli, codepostal, villecli
 FROM CLIENT 
 NATURAL JOIN COMMANDE 
@@ -51,7 +48,6 @@ NATURAL JOIN ECRIRE
 NATURAL JOIN AUTEUR
 WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 
---375--
 
 -- +-----------------------+--
 -- * Question 127235 : 2pts --
@@ -66,7 +62,6 @@ WHERE YEAR(datecom) = 2021 and nomauteur='René Goscinny';
 -- +---------------+-----------------------------------+-------------------------+-----+
 -- | etc...
 -- = Reponse question 127235.
-\! echo "requete 3----------------------------------------------"
 SELECT isbn, titre, nommag, qte
 FROM LIVRE
 NATURAL LEFT JOIN ECRIRE
@@ -74,7 +69,6 @@ NATURAL JOIN POSSEDER
 NATURAL JOIN MAGASIN
 WHERE idauteur IS NULL AND qte > 8;
 
---13--
 
 -- +-----------------------+--
 -- * Question 127279 : 2pts --
@@ -89,18 +83,16 @@ WHERE idauteur IS NULL AND qte > 8;
 -- +-------+-------------------------+-------+
 -- | etc...
 -- = Reponse question 127279.
-\! echo "requete 4----------------------------------------------"
 SELECT idmag, nommag, COUNT(idcli) AS nbcli
 FROM MAGASIN
 LEFT JOIN CLIENT ON MAGASIN.villemag = CLIENT.villecli
 GROUP BY idmag, nommag; 
 
---7--
 
 -- +-----------------------+--
 -- * Question 127291 : 2pts --
 -- +-----------------------+--
---  Ecrire une requête qui renvoie les informations suivantes:
+-- Ecrire une requête qui renvoie les informations suivantes:
 --  Pour chaque magasin, on veut la quantité de livres achetés le 15/09/2022 en affichant les 0.
 
 -- Voici le début de ce que vous devez obtenir.
@@ -110,7 +102,6 @@ GROUP BY idmag, nommag;
 -- +-------------------------+------+
 -- | etc...
 -- = Reponse question 127291.
-\! echo "requete 5----------------------------------------------"
 with Commandes_15092022 AS(
 SELECT idmag, numcom
 FROM COMMANDE
@@ -123,22 +114,12 @@ NATURAL LEFT JOIN DETAILCOMMANDE
 GROUP BY nommag;
 
 
-
-
-
 -- +-----------------------+--
 -- * Question 127314 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Instructions d'insertion dans la base de données
-/* 
-Indiquez les insertions à effectuer dans la base de données pour insérer le livre de numéro ISBN
-9782844273765 dont le titre est SQL pour les Nuls publié en 2002 par First Interactive. 
-compte 292 pages et a été écrit par Allen G. Taylor (d’identifiant OL246259A) et Reinhard Engel
-(d’identifiant OL7670824A). Ce livre est stocké en 3 exemplaires dans le magasin Loire et Livres.
-Son prix est de 33.5€
 
-*/
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
 -- +------------+
@@ -146,16 +127,15 @@ Son prix est de 33.5€
 -- +------------+
 -- | etc...
 -- = Reponse question 127314.
-
---INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
---VALUES ('9782844273765', 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
---INSERT EDITEUR VALUES ('First Interactive',240);
---INSERT EDITER VALUES ('9782844273765', 240);
---INSERT AUTEUR VALUES ('OL246259A', 'Allen G. Taylor');
---INSERT AUTEUR VALUES ('OL7670824A', 'Reinhard Engel');
---INSERT ECRIRE VALUES ('9782844273765', 'OL246259A');
---INSERT ECRIRE VALUES ('9782844273765', 'OL7670824A');
---INSERT POSSEDER VALUES ('Loire et Livres', '9782844273765', 3);
+INSERT LIVRE (isbn, titre, nbpages, datepubli, prix)
+VALUES ('9782844273765', 'SQL pour les Nuls', 292, '2002-01-01', 33.5);
+INSERT EDITEUR VALUES ('First Interactive',240);
+INSERT EDITER VALUES ('9782844273765', 240);
+INSERT AUTEUR VALUES ('OL246259A', 'Allen G. Taylor');
+INSERT AUTEUR VALUES ('OL7670824A', 'Reinhard Engel');
+INSERT ECRIRE VALUES ('9782844273765', 'OL246259A');
+INSERT ECRIRE VALUES ('9782844273765', 'OL7670824A');
+INSERT POSSEDER VALUES ('Loire et Livres', '9782844273765', 3);
 
 
 -- +-----------------------+--
@@ -171,12 +151,10 @@ Son prix est de 33.5€
 -- +-------------------------+-------+-----+
 -- | etc...
 -- = Reponse question 127369.
-\! echo "requete 6----------------------------------------------"
 SELECT nommag,YEAR(datecom) Année,sum(qte) qte FROM MAGASIN
 NATURAL JOIN COMMANDE
 NATURAL JOIN DETAILCOMMANDE
 GROUP BY nommag,YEAR(datecom); 
-
 
 
 -- +-----------------------+--
@@ -191,7 +169,7 @@ GROUP BY nommag,YEAR(datecom);
 -- | Theme                                | Montant |
 -- +--------------------------------------+---------+
 -- | etc...
-\! echo "requete 7----------------------------------------------"
+-- = Reponse question 127370.
 SELECT nomclass AS Theme, SUM(prixvente * qte) AS Montant
 FROM DETAILCOMMANDE
 NATURAL JOIN COMMANDE
@@ -216,7 +194,6 @@ ORDER BY nomclass;
 -- +------+-------------------------+---------+
 -- | etc...
 -- = Reponse question 127381.
-\! echo "requete 8----------------------------------------------"
 select MONTH(datecom) as mois, nommag as Magasin, sum(prixvente*qte) as CA
 from COMMANDE
 natural join DETAILCOMMANDE
@@ -238,22 +215,22 @@ group by MONTH(datecom), nommag;
 -- +-------+------------+---------+
 -- | etc...
 -- = Reponse question 127437.
-
 SELECT YEAR(datecom) as annee, 
     CASE 
         WHEN enligne = 'O' THEN 'en ligne' 
         ELSE 'en magasin' 
-    END as typevente, -- on remplace les O par en ligne et les N par en magasin fonction trouvé sur google 
+    END as typevente,
     sum(prixvente*qte) as montant
 FROM COMMANDE
 NATURAL JOIN DETAILCOMMANDE
 GROUP BY YEAR(datecom), typevente;
 
+
 -- +-----------------------+--
 -- * Question 127471 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
---  Requête Graphique 5
+--  Requête Graphique 5 
 
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
@@ -276,7 +253,7 @@ LIMIT 10;
 -- * Question 127516 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
---  Requête Graphique 6 Origine des clients ayant acheter des livres de R. Goscinny
+--  Requête Graphique 6 Qté de livres de R. Goscinny achetés en fonction de l'orgine des clients
 
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
@@ -285,8 +262,7 @@ LIMIT 10;
 -- +-------------+-----+
 -- | etc...
 -- = Reponse question 127516.
-
-SELECT villecli AS ville, COUNT(idcli) AS qte
+SELECT villecli AS ville, SUM(qte) AS qte
 FROM CLIENT
 NATURAL JOIN COMMANDE
 NATURAL JOIN DETAILCOMMANDE
@@ -296,12 +272,12 @@ NATURAL JOIN AUTEUR
 WHERE nomauteur = 'René Goscinny'
 GROUP BY villecli;
 
+
 -- +-----------------------+--
 -- * Question 127527 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête Graphique 7 Valeur du stock par magasin
-
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
 -- +-------------------------+---------+
@@ -309,7 +285,6 @@ GROUP BY villecli;
 -- +-------------------------+---------+
 -- | etc...
 -- = Reponse question 127527.
-
 select nommag as Magasin, sum(qte*prix) as total
 from MAGASIN
 natural join POSSEDER
@@ -329,27 +304,26 @@ group by nommag;
 -- +-------+---------+---------+---------+
 -- | etc...
 -- = Reponse question 127538.
-
-
 with MoyenneClient(idcli,annee,CA) as (select idcli,YEAR(datecom) annee,SUM(qte*prixvente) CA from CLIENT
                        natural join COMMANDE natural join DETAILCOMMANDE
                        group by idcli,YEAR(datecom))
 select annee,MAX(CA) maximum,MIN(CA) minimum,AVG(CA) moyenne from MoyenneClient
 group by annee;
 
+
 -- +-----------------------+--
--- * Question 127538 : 2pts --
+-- * Question 127572 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête Palmarès
 
 -- Voici le début de ce que vous devez obtenir.
 -- ATTENTION à l'ordre des colonnes et leur nom!
--- +-------+---------+---------+---------+
--- | annee | maximum | minimum | moyenne |
--- +-------+---------+---------+---------+
+-- +-------+-----------------------+-------+
+-- | annee | nomauteur             | total |
+-- +-------+-----------------------+-------+
 -- | etc...
--- = Reponse question 127538.
+-- = Reponse question 127572.
 WITH AuteurVentesAnnuel AS (
     SELECT YEAR(datecom) AS annee, idauteur, SUM(qte) AS total
     FROM ECRIRE
@@ -364,24 +338,12 @@ SELECT annee, nomauteur, max(total) as total
 FROM AUTEUR NATURAL RIGHT JOIN AuteurVentesAnnuel
 Group BY annee;
 
-
-
 -- +-----------------------+--
--- * Question 127572 : 2pts --
+-- * Question 127574 : 2pts --
 -- +-----------------------+--
 -- Ecrire une requête qui renvoie les informations suivantes:
 --  Requête imprimer les commandes en considérant que l'on veut celles de février 2020
-
--- Voici le début de ce que vous devez obtenir.
--- ATTENTION à l'ordre des colonnes et leur nom!
--- +-------+-----------------------+-------+
--- | annee | nomauteur             | total |
--- +-------+-----------------------+-------+
--- | etc...
--- = Reponse question 127572.
-
-
-
+-- = Reponse question 127574
 SELECT nommag , numcom , datecom ,nomcli, prenomcli, adressecli, 
        codepostal, villecli, isbn, titre, qte, prixvente, 
        (prixvente * qte) AS Total
