@@ -13,7 +13,7 @@ class MySQL(object):
         self.database = database
         #try:
         self.engine = sqlalchemy.create_engine(
-                '://' + self.user + ':' + self.passwd + '@' + self.host + '/' + self.database,
+                'mariadb://' + self.user + ':' + self.passwd + '@' + self.host + '/' + self.database,
                 )
         self.cnx = self.engine.connect()
         print("connexion réussie")
