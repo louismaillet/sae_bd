@@ -3,4 +3,4 @@ SELECT
     SUM(prixvente * qte) AS CA
 FROM COMMANDE
 NATURAL JOIN DETAILCOMMANDE
-GROUP BY MONTH(datecom)
+GROUP BY MONTH(datecom), YEAR(datecom)

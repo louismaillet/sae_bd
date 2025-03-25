@@ -13,7 +13,7 @@ class MySQL(object):
         self.database = database
         #try:
         self.engine = sqlalchemy.create_engine(
-                'mariadb://' + self.user + ':' + self.passwd + '@' + self.host + '/' + self.database,
+                '://' + self.user + ':' + self.passwd + '@' + self.host + '/' + self.database,
                 )
         self.cnx = self.engine.connect()
         print("connexion réussie")
@@ -29,91 +29,54 @@ class MySQL(object):
                 requete=requete.replace('?',str(param),1)
         return self.cnx.execute(requete)
 
-def faire_factures(requete:str, mois:int, annee:int, bd:MySQL):
-    # exécute la requête en remplaçant le premier ? par le numéro du mois 
-    # et le deuxième ? par l'année
-    curseur=bd.execute(requete,(mois,annee))
-    # Initialisations du traitement
+def faire_factures(requete: str, mois: int, annee: int, bd: MySQL):
+    curseur = bd.execute(requete, (mois, annee))
     print(f"Factures du {mois}/{annee}")
     requetes = list(curseur)
-    res=''
+    res = ""  # Initialisation de res comme une chaîne de caractères
     taille = 115
     ca_global = 0
     nb_global = 0
-    nb_commande_livre = 0
     total = 0
-    for i in range(len(requetes)-1):
-        ligne = requetes[i]
-        nommag = ligne['nommag']
-        numcom = ligne['numcom']
-        datecom = ligne['datecom']
-        nomcli = ligne['nomcli']
-        prenomcli = ligne['prenomcli']
-        adressecli = ligne['adressecli']
-        codepostal = ligne['codepostal']
-        villecli = ligne['villecli']
-        isbn = ligne['isbn']
-        titre = ligne['titre']
-        qte = ligne['qte']
-        prix = ligne['prixvente']
-        Total = ligne['Total']
-        if i ==0:
-            res +=f"Facture du {mois}/{annee}"
-            res += f"Edition des factures du magasin {str(nommag)}\n"
-            res += "-"*taille+"\n"   
-            facture_editees = 0
-            nb_livre = 0
-            nb_commande_livre = 1
-            res += f"{prenomcli} {nomcli}\n{adressecli}\n{codepostal} {villecli}\n"
-            res += f"commande n° {numcom} du {datecom}".center(taille)+"\n"
-            res += "ISBN".rjust(12)+"Titre".rjust(20)+"qte".rjust(56)+"prix".rjust(16)+"total\n".rjust(11)
-        elif numcom != requetes[i+1]['numcom']:
-            res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
-            nb_commande_livre = 1
-            total += Total
-            res += "--------\n".rjust(taille)
-            res += ("Total    "+str(total)+"\n").rjust(taille)
-            res +="-"*taille+"\n"
-            ca_global+= total
-            total = 0
-            nb_livre += qte
-            facture_editees+=1
-            if nommag != requetes[i+1]['nommag']:
-                res += str(facture_editees)+" factures éditées\n"
-                res += str(nb_livre)+" livres vendus\n"
-                res += "*"*taille+"\n"
-                res += "Edition des factures du magasin "+str(nommag)+"\n"
-                res += "-"*taille+"\n"
-                nb_global +=nb_livre   
-                facture_editees = 0
-                nb_livre = 0
-            res += f"{requetes[i+1]['prenomcli']} {requetes[i+1]['nomcli']}\n{requetes[i+1]['adressecli']}\n{requetes[i+1]['codepostal']} {requetes[i+1]['villecli']}\n"
-            res += f"commande n° {requetes[i+1]['numcom']} du {requetes[i+1]['datecom']}".center(taille)+"\n"
-            res += "ISBN".rjust(12)+"Titre".rjust(20)+"qte".rjust(56)+"prix".rjust(16)+"total\n".rjust(11)
-        else:
-            res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
-            total += Total
-            nb_commande_livre +=1
-            nb_livre += qte
-        if i==(len(requetes)-2):
-            res += str(nb_commande_livre).ljust(3)+str(isbn).ljust(15)+str(titre).ljust(68)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
-            total += Total
-            ca_global+= total
-            nb_livre += qte
-            nb_global +=nb_livre
-            facture_editees+=1
-            res += "--------\n".rjust(taille)
-            res += ("Total    "+str(total)+"\n").rjust(taille)
-            res +="-"*taille+"\n"
-            res += str(facture_editees)+" factures éditées\n"
-            res += str(nb_livre)+" livres vendus\n"
-            res += "*"*taille+"\n"
-            res += f"Chiffre d'affaire global : {ca_global}\n"
-            res += f"Nombre livres vendus : {nb_global}"
+    facture_editees = 0
+    nb_livre = 0
 
-        
-    #ici fin du traitement
-    # fermeture de la requête
+    def ajouter_entete_facture(nommag, prenomcli, nomcli, adressecli, codepostal, villecli, numcom, datecom, res):
+        res += f"Facture du {mois}/{annee}\n"
+        res += f"Edition des factures du magasin {nommag}\n" + "-" * taille + "\n"
+        res += f"{prenomcli} {nomcli}\n{adressecli}\n{codepostal} {villecli}\n"
+        res += f"commande n° {numcom} du {datecom}".center(taille) + "\n"
+        res += "ISBN".rjust(12) + "Titre".rjust(20) + "qte".rjust(56) + "prix".rjust(16) + "total\n".rjust(11)
+        return res
+
+    for i, ligne in enumerate(requetes):
+        if i == 0 or ligne['numcom'] != requetes[i - 1]['numcom']:
+            if i != 0:
+                res += "--------\n".rjust(taille)
+                res += f"Total    {total}\n".rjust(taille) + "-" * taille + "\n"
+                ca_global += total
+                total = 0
+                facture_editees += 1
+                if ligne['nommag'] != requetes[i - 1]['nommag']:
+                    res += f"{facture_editees} factures éditées\n{nb_livre} livres vendus\n" + "*" * taille + "\n"
+                    nb_global += nb_livre
+                    facture_editees = 0
+                    nb_livre = 0
+            res = ajouter_entete_facture(ligne['nommag'], ligne['prenomcli'], ligne['nomcli'], ligne['adressecli'], ligne['codepostal'], ligne['villecli'], ligne['numcom'], ligne['datecom'], res)
+    
+        res += f"{ligne['isbn'].ljust(15)}{ligne['titre'].ljust(68)}{str(ligne['qte']).rjust(14)}{str(ligne['prixvente']).rjust(9)}{str(ligne['Total']).rjust(9)}\n"
+        total += ligne['Total']
+        nb_livre += ligne['qte']  # Mise à jour du nombre de livres vendus
+
+    # Finalisation après la dernière ligne
+    res += "--------\n".rjust(taille)
+    res += f"Total    {total}\n".rjust(taille) + "-" * taille + "\n"
+    ca_global += total
+    nb_global += nb_livre
+    facture_editees += 1
+    res += f"{facture_editees} factures éditées\n{nb_livre} livres vendus\n" + "*" * taille + "\n"
+    res += f"Chiffre d'affaire global : {ca_global}\nNombre livres vendus : {nb_global}"
+
     curseur.close()
     return res
         
@@ -127,7 +90,7 @@ if __name__ == '__main__':
     parser.add_argument("--requete", dest="fichierRequete", help="Fichier contenant la requete des commandes", type=str)    
     args = parser.parse_args()
     #passwd = getpass.getpass("mot de passe SQL:")
-    passwd = "joubert"
+    passwd = "maillet"
     try:
         ms = MySQL(args.nomLogin, passwd, args.nomServeur, args.nomBaseDeDonnees)
     except Exception as e:

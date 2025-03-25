@@ -3,6 +3,7 @@ import argparse
 import getpass
 import numpy as np
 import matplotlib.pyplot as plt
+from math import sqrt
 
 # python3 facture.py --requete ./req_fac.sql --login maillet --serveur servinfo-maria --bd Librairie
 
@@ -30,6 +31,24 @@ class MySQL(object):
                 requete=requete.replace('?',str(param),1)
         return self.cnx.execute(requete)
 
+
+def cov_ou_var(X,Y):
+    moyX = np.mean(X)
+    moyY = np.mean(Y)
+    res = 0
+    for i in range(len(X)):
+        res += (X[i]-moyX)*(Y[i]-moyY)
+    return res /len(X)
+
+def corr(X,Y):
+    return cov_ou_var(X,Y)/(sqrt(cov_ou_var(X,X)*sqrt(cov_ou_var(Y,Y))))
+
+def regression_lineaire(X,Y):
+    a = cov_ou_var(X,Y)/cov_ou_var(X,X)
+    b = np.mean(Y)-a*np.mean(X)
+    return a,b
+    
+
 def visualiser_points(requete:str, bd:MySQL):
     curseur = bd.execute(requete, [])
     nb_ventes = []
@@ -37,16 +56,20 @@ def visualiser_points(requete:str, bd:MySQL):
     
     for ligne in curseur:
         nb_ventes.append(ligne[0])  # NbVentes
-        ca.append(ligne[1])        # CA
+        ca.append(round(ligne[1]))        # CA
     
+    A = np.array(list(nb_ventes))
+    B = np.array(list(ca))
+    
+    c,d=regression_lineaire(A,B)
+    
+    
+    plt.scatter(A,B, color='blue', marker='o', alpha=0.7)
+    plt.plot([0,200],[0,(c*200)+d] , color='green')    
     curseur.close()
-    
-    # Tracer le nuage de points
-    plt.scatter(nb_ventes, ca, color='blue', alpha=0.7)
     plt.title("Relation entre NbVentes et CA")
     plt.xlabel("Nombre de ventes (NbVentes)")
     plt.ylabel("Chiffre d'affaires (CA)")
-    plt.grid(True)
     plt.show()
 
 if __name__ == '__main__':
