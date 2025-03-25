@@ -41,7 +41,7 @@ def cov_ou_var(X,Y):
     return res /len(X)
 
 def corr(X,Y):
-    return cov_ou_var(X,Y)/(sqrt(cov_ou_var(X,X)*sqrt(cov_ou_var(Y,Y))))
+    return cov_ou_var(X,Y)/(sqrt(cov_ou_var(X,X))*sqrt(cov_ou_var(Y,Y)))
 
 def regression_lineaire(X,Y):
     a = cov_ou_var(X,Y)/cov_ou_var(X,X)
@@ -60,12 +60,12 @@ def visualiser_points(requete:str, bd:MySQL):
     
     A = np.array(list(nb_ventes))
     B = np.array(list(ca))
-    
+    print(corr(A,B))
     c,d=regression_lineaire(A,B)
     
     
     plt.scatter(A,B, color='blue', marker='o', alpha=0.7)
-    plt.plot([0,200],[0,(c*200)+d] , color='green')    
+    #plt.plot([0,200],[0,(c*200)+d] , color='green')    
     curseur.close()
     plt.title("Relation entre NbVentes et CA")
     plt.xlabel("Nombre de ventes (NbVentes)")
