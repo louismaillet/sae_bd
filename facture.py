@@ -29,109 +29,67 @@ class MySQL(object):
                 requete=requete.replace('?',str(param),1)
         return self.cnx.execute(requete)
 
-def faire_factures(requete:str, mois:int, annee:int, bd:MySQL):
-    # exécute la requête en remplaçant le premier ? par le numéro du mois 
-    # et le deuxième ? par l'année
-    curseur=bd.execute(requete,(mois,annee))
-    res=''
-    # Initialisations du traitement
-    res += f"Factures du {mois}/{annee}\n"
-    taille_terminal = 115
-    commande_prec = None
-    magasin_prec = None
-    ca_global = 0
-    nb_global = 0
-    nb_commande_livre = 0
+def faire_factures(requete: str, mois: int, annee: int, bd: MySQL):
+    def ajouter_ligne_facture(res, nb_commande_livre, isbn, titre, qte, prix, total):
+        if len(titre)<66: 
+            return res + f"{'':<5}{nb_commande_livre:<5}{isbn:<15}{titre:<66}{qte:<14}{prix:<10}{total}\n"
+        else:
+            return res + f"{'':<5}{nb_commande_livre:<5}{isbn:<15}{(titre[:60]+"..."):<66}{qte:<14}{prix:<9}{total}\n"
+
+    def ajouter_total_facture(res, total):
+        return res + f"{'':<111}---------\n{'':<110}Total {total}\n" + "-" * taille_terminal + "\n"
+
+    curseur = bd.execute(requete, (mois, annee))
+    res = f"Factures du {mois}/{annee}\n"
+    taille_terminal = 122
+    
+    magasin_prec, commande_prec = None, None
+    ca_global, nb_global = 0, 0
+    nb_livre_magasin, nb_livre_commande, total_commande = 0, 0, 0
+    facture_editees_magasin, facture_editees_global = 0, 0
+    
     for ligne in curseur:
-        nommag = ligne['nommag']
-        numcom = ligne['numcom']
-        datecom = ligne['datecom']
-        nomcli = ligne['nomcli']
-        prenomcli = ligne['prenomcli']
-        adressecli = ligne['adressecli']
-        codepostal = ligne['codepostal']
-        villecli = ligne['villecli']
-        isbn = ligne['isbn']
-        titre = ligne['titre']
-        qte = ligne['qte']
-        prix = ligne['prixvente']
-        Total = ligne['Total']
-
-        if magasin_prec is None: #vérification pour le cas du début
-            res += f"Edition des factures du magasin {nommag}\n"
-            res += "-" * taille_terminal + "\n"
-            nb_livre = 0
-            facture_editees = 0
-        elif nommag!= magasin_prec: #si je change de magasin
-            nb_global+=nb_livre
-            ca_global+=total
-            res += "".ljust(111) + "---------\n"
-            res += "".ljust(110) + "Total " + str(total) + "\n"
-            res += "-" * taille_terminal + "\n"
-            res += str(facture_editees) + " factures éditées\n"
-            res += str(nb_livre) + " livres vendus\n"
-            res += "*" * taille_terminal + "\n"
-            print(f"Edition des factures du magasin {nommag}")
-            print("-" * taille_terminal)
-            nb_livre = 0
-            facture_editees = 0
-            total = 0
-
-        if commande_prec is None: #vérification pour le cas du début
-            nb_commande_livre +=1
+        nommag, numcom, datecom = ligne['nommag'], ligne['numcom'], ligne['datecom']
+        nomcli, prenomcli, adressecli = ligne['nomcli'], ligne['prenomcli'], ligne['adressecli']
+        codepostal, villecli = ligne['codepostal'], ligne['villecli']
+        isbn, titre, qte, prix, Total = ligne['isbn'], ligne['titre'], ligne['qte'], ligne['prixvente'], ligne['Total']
+        
+        if magasin_prec is None or nommag != magasin_prec:
+            if magasin_prec is not None:
+                res = ajouter_total_facture(res, total_commande)
+                nb_global += nb_livre_magasin
+                res += f"{facture_editees_magasin} factures éditées\n{nb_livre_magasin} livres vendus\n" + "*" * taille_terminal + "\n"
+            res += f"Edition des factures du magasin {nommag}\n" + "-" * taille_terminal + "\n"
+            nb_livre_magasin, facture_editees_magasin = 0, 0
+            total_commande, nb_livre_commande = 0, 0
+        
+        if commande_prec is None or numcom != commande_prec:
+            if commande_prec is not None and magasin_prec == nommag:
+                res = ajouter_total_facture(res, total_commande)
+            nb_livre_commande = 0
             res += f"{prenomcli} {nomcli}\n{adressecli}\n{codepostal} {villecli}\n"
-            res += " " * (taille_terminal // 2 - 15) + "commande n°" + str(numcom) + " du " + str(datecom) + "\n"
-            res += "".ljust(15) + "ISBN".ljust(40) + "Titre".ljust(35) + "qte".ljust(15) + "prix".ljust(10) + "total\n"
-            res += "".ljust(5) + str(nb_commande_livre).ljust(5) + str(isbn).ljust(15) + str(titre).ljust(66) + str(qte).ljust(14) + str(prix).ljust(9) + str(Total) + "\n"
-            total = 0
-            total += Total
-            nb_livre += qte
-            facture_editees +=1
-
-        elif commande_prec!=numcom: #si je change de commande
-            if nommag == magasin_prec:
-                res += "".ljust(111)+"---------"+"\n"
-                res += "".ljust(110)+"Total "+str(total)+"\n"
-                res += "-"*taille_terminal + "\n"
-            ca_global+=total
-            total = 0
-            nb_commande_livre = 0
-            nb_commande_livre +=1
-
-            res += f"{prenomcli} {nomcli}\n{adressecli}\n{codepostal} {villecli}"+"\n"
-            res += " " * (taille_terminal//2-15) + "commande n°" + str(numcom) + " du "+str(datecom)+"\n"
-            res += "".ljust(15)+"ISBN".ljust(40)+"Titre".ljust(35)+"qte".ljust(15)+"prix".ljust(10)+"total"+"\n"
-            res += "".ljust(5)+str(nb_commande_livre).ljust(5)+str(isbn).ljust(15)+str(titre).ljust(66)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
-
-            total += Total
-            nb_livre += qte
-            facture_editees +=1
-        else: #si je ne change pas de commande
-            nb_commande_livre +=1
-
-            res +="".ljust(5)+str(nb_commande_livre).ljust(5)+str(isbn).ljust(15)+str(titre).ljust(66)+str(qte).ljust(14)+str(prix).ljust(9)+str(Total)+"\n"
-
-            total += Total
-            nb_livre += qte
-            facture_editees +=1
-
-        magasin_prec = nommag
-        commande_prec = numcom
-
-    nb_global += nb_livre
-    ca_global+=total
-    res += "".ljust(111) + "---------\n"
-    res += "".ljust(110) + "Total " + str(total) + "\n"
-    res += "-" * taille_terminal + "\n"
-    res += str(facture_editees) + " factures éditées\n"
-    res += str(nb_livre) + " livres vendus\n"
-    res += "*" * taille_terminal + "\n"
-    res += "Chiffre d'affaire global : " + str(ca_global) + "\n"
-    res += "Nombre livres vendus " + str(nb_global) + "\n"
-
-
+            res += f"{' ' * (taille_terminal // 2 - 15)}commande n°{numcom} du {datecom}\n"
+            res += f"{'':<15}{'ISBN':<40}{'Titre':<35}{'qte':<15}{'prix':<10}total\n"
+            facture_editees_magasin += 1
+            facture_editees_global += 1
+            total_commande = 0
+        nb_livre_commande += qte
+        nb_livre_magasin += qte
+        total_commande += Total
+        ca_global += Total
+        res = ajouter_ligne_facture(res, nb_livre_commande, isbn, titre, qte, prix, Total)
+        
+        magasin_prec, commande_prec = nommag, numcom
+    
+    # Ajouter le dernier total de commande et magasin
+    res = ajouter_total_facture(res, total_commande)
+    nb_global += nb_livre_magasin
+    res += f"{facture_editees_magasin} factures éditées\n{nb_livre_magasin} livres vendus\n" + "*" * taille_terminal + "\n"
+    res += f"Chiffre d'affaire global : {ca_global}\nNombre livres vendus {nb_global}\n"
+    
     curseur.close()
     return res
+
         
 
 

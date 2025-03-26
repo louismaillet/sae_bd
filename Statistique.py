@@ -61,11 +61,12 @@ def visualiser_points(requete:str, bd:MySQL):
     A = np.array(list(nb_ventes))
     B = np.array(list(ca))
     print(corr(A,B))
-    c,d=regression_lineaire(A,B)
-    
+    a,b=regression_lineaire(A,B)
+    print(a)
+    print(b)
     
     plt.scatter(A,B, color='blue', marker='o', alpha=0.7)
-    #plt.plot([0,200],[0,(c*200)+d] , color='green')    
+    plt.plot([0,200],[0,(a*200)+b] , color='green')    
     curseur.close()
     plt.title("Relation entre NbVentes et CA")
     plt.xlabel("Nombre de ventes (NbVentes)")
